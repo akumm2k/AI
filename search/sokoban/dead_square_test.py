@@ -12,7 +12,7 @@ LEVEL_SET = "Aymeric_du_Peloux_1_Minicosmos"
 LIMIT = 10
 
 DIR = path_join(dirname(__file__), "game", "levels")
-SOLUTION = "dead_squares_expected.txt" # None
+SOLUTION = "dead_squares_expected.txt"  # None
 
 TMP_FILE = "tmp_dead.txt"
 
@@ -103,6 +103,10 @@ def test(
     if tmp_file is not None:
         out.close()
         sys.stdout = stdout_save
+
+    """
+    TODO: Collect all the boards, their expected dead squares for each level, into a list / dict or (level, board, expected_dead) triple. Then, add the computed dead_squares and provide the diff positions. Also, provide details on expected and computer shape of the dead square matrix.
+    """
 
     if expected is not None:
         solution = path_join(dirname(__file__), expected)
