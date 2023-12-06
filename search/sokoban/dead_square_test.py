@@ -75,8 +75,8 @@ def print_detected(level_set):
 def test(
     level_set=LEVEL_SET,
     expected=SOLUTION,
-    tmp_file=TMP_FILE,
-    remove_tmp_file=True,
+    returned_solution_file=TMP_FILE,
+    remove_tmp_file=False,
 ) -> Union[bool, None]:
     """
     Test dead squares detection:
@@ -91,18 +91,18 @@ def test(
 
     Remove created tmp_file if remove_tmp_file is True.
     """
-    if expected is not None and tmp_file is None:
-        tmp_file = TMP_FILE
+    if expected is not None and returned_solution_file is None:
+        returned_solution_file = TMP_FILE
         remove_tmp_file = True
 
-    if tmp_file is not None:
-        out = open(tmp_file, "w+")
+    if returned_solution_file is not None:
+        out = open(returned_solution_file, "w+")
         stdout_save = sys.stdout
         sys.stdout = out
 
     print_detected(level_set)
 
-    if tmp_file is not None:
+    if returned_solution_file is not None:
         out.close()
         sys.stdout = stdout_save
 
@@ -112,7 +112,9 @@ def test(
 
     if expected is not None:
         solution = path_join(dirname(__file__), expected)
-        with open(tmp_file, "r") as det, open(solution, "r") as exp:
+        with open(returned_solution_file, "r") as det, open(
+            solution, "r"
+        ) as exp:
             i = 1
             dl, el = det.readline(), exp.readline()
             while dl == el and dl != "":
@@ -127,9 +129,11 @@ def test(
                     f"Mismatch on line {i}:\nExpected:\n{el}\nDetected:\n{dl}"
                 )
         if remove_tmp_file:
-            remove(tmp_file)
+            remove(returned_solution_file)
         else:
-            print(f"Detections file created: {tmp_file}.")
+            print(
+                f"Detections file created: {returned_solution_file}."
+            )
         return result
 
     else:
