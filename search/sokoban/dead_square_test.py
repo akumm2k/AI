@@ -4,7 +4,9 @@ from game.board import Board, ETile
 from os.path import dirname, exists
 from os.path import join as path_join
 import sys
-from typing import List, Union
+from typing import List, Union, IO
+from dataclasses import dataclass
+import re
 
 from dead_square_detector import detect
 
@@ -132,6 +134,42 @@ def test(
 
     else:
         return None
+
+
+@dataclass(frozen=True)
+class LevelBoardBundle:
+    level: str
+    raw_board: List[List[str]]
+    dead_square_board: List[List[str]]
+
+
+def parse_single_level_boards(file_obj: IO) -> LevelBoardBundle:
+    """parse_single_level_boards
+
+    parses a part of the file object into a
+    (level, raw_board, dead_square_board) triple
+
+    :param file_obj: file object to read the expected / actual test output
+    :return: (level, raw_board, dead_square_board) triple
+    """
+    level = re.sub(r"== level (.+) ==", r"\1", file_obj.readline())
+
+    # skip line
+    assert file_obj.readline().strip() == ""
+
+    raw_board = [list(file_obj.readline()) for _ in range(8)]
+
+    # skip line
+    assert file_obj.readline().strip() == ""
+
+    # dead squares title
+    assert file_obj.readline().strip() == "dead squares:"
+
+    dead_square_board = []
+    while (row := file_obj.readline().strip()) != "\n":
+        dead_square_board.append(list(row))
+
+    return LevelBoardBundle(level, raw_board, dead_square_board)
 
 
 if __name__ == "__main__":
