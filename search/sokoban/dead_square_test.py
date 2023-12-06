@@ -151,7 +151,11 @@ def parse_single_level_boards(file_obj: IO) -> LevelBoardBundle:
     """parse_single_level_boards
 
     parses a part of the file object into a
-    (level, raw_board, dead_square_board) triple
+    (level, raw_board, dead_square_board) triple.
+
+    This function is tightly coupled to the output format used
+    in the expected solution file, and the construction of the actual
+    solution file.
 
     :param file_obj: file object to read the expected / actual test output
     :return: (level, raw_board, dead_square_board) triple
